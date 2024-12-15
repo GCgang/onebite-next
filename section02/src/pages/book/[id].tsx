@@ -1,7 +1,24 @@
-import book from '@/mock/book.json';
 import style from './[id].module.css';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import fetchOneBook from '@/lib/fetch-one-book';
 
-export default function Page() {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const id = context.params!.id;
+  const book = await fetchOneBook(Number(id));
+  return {
+    props: {
+      book,
+    },
+  };
+};
+export default function Page({
+  book,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  if (!book) {
+    return '문제가 발생 했습니다 다시 시도해 보세요.';
+  }
   const { id, title, subTitle, description, author, publisher, coverImgUrl } =
     book;
 
