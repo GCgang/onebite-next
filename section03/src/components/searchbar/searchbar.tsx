@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import style from './serachbar.module.css';
+import style from './searchbar.module.css';
 
 export default function SearchBar() {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className='style.container'>
+    <div className={style.container}>
       <input
         type='text'
         value={search}
