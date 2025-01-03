@@ -1,11 +1,13 @@
 import BookItem from '@/components/book-item/book-item';
 import { BookData } from '@/types';
+import { delay } from '@/util/delay';
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  await delay(2000);
   const { q } = await searchParams;
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/search?q=${q}`,
