@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import ReviewEditor from '@/components/review-editor/review-editor';
 import ReiviewItem from '@/components/review-item/review-item';
 import Image from 'next/image';
+import { Metadata } from 'next';
 
 // export const dynamicParams = false;
 export function generateStaticParams() {
@@ -12,7 +13,8 @@ export function generateStaticParams() {
 
 async function BookDetail({ bookId }: { bookId: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`,
+    { cache: 'force-cache' }
   );
 
   if (!response.ok) {
@@ -67,6 +69,34 @@ async function ReviewList({ bookId }: { bookId: string }) {
       ))}
     </section>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${id}`,
+    { cache: 'force-cache' }
+  );
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  const book: BookData = await response.json();
+
+  return {
+    title: `${book.title} - 한입북스`,
+    description: `${book.description}`,
+    openGraph: {
+      title: `${book.title} - 한입북스`,
+      description: `${book.description}`,
+      images: [book.coverImgUrl],
+    },
+  };
 }
 
 export default async function Page({
